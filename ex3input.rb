@@ -999,12 +999,15 @@ input = "011000110010
 100001111011
 111101110001"
 
+# part 1
+
 entries = input.split
+
 gamma, epsilon = '', ''
 (0..11).each do |index|
   zero_count, one_count = 0, 0
   ith_values = entries.map { |e| e[index] }.join
-  ith_values.each_char { |v| v == '0' ? zero_count += 1 : one_count += 1}
+  ith_values.each_char { |v| v == '0' ? zero_count += 1 : one_count += 1 }
   if zero_count > one_count
     gamma << '0'
     epsilon << '1'
@@ -1015,3 +1018,39 @@ gamma, epsilon = '', ''
 end
     
 puts gamma.to_i(2) * epsilon.to_i(2)
+
+# part 2
+
+oxygen, co2 = '', ''
+current_oxygen_entries = entries
+(0..11).each do |index|
+  zero_count, one_count = 0, 0
+  ith_values = current_oxygen_entries.map { |e| e[index] }.join
+  ith_values.each_char { |v| v == '0' ? zero_count += 1 : one_count += 1}
+  if zero_count > one_count
+    current_oxygen_entries = current_oxygen_entries.select { |e| e[index] == '0' }
+  else
+    current_oxygen_entries = current_oxygen_entries.select { |e| e[index] == '1' }
+  end
+  break if current_oxygen_entries.length == 1
+end
+
+oxygen = current_oxygen_entries.first
+
+current_co2_entries = entries
+(0..11).each do |index|
+  zero_count, one_count = 0, 0
+  ith_values = current_co2_entries.map { |e| e[index] }.join
+  ith_values.each_char { |v| v == '0' ? zero_count += 1 : one_count += 1}
+  if one_count < zero_count
+    current_co2_entries = current_co2_entries.select { |e| e[index] == '1'}
+  else
+    current_co2_entries = current_co2_entries.select { |e| e[index] == '0' }
+  end
+  break if current_co2_entries.length == 1
+end
+
+co2 = current_co2_entries.first
+
+puts oxygen.to_i(2) * co2.to_i(2)
+
