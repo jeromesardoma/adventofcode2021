@@ -630,26 +630,53 @@ def win?(board)
     get_columns(board).any? { |column| column.all? { |e| e == "X" } }
 end
 
-win = false
-winning_board = nil
+# -- part 1
+
+# win = false
+# winning_board = nil
+# last_called_number = nil
+
+# called_numbers.each do |called_number|
+#   boards.each do |board|
+#     mark(board, called_number)
+#     if win?(board)
+#       win = true
+#       winning_board = board
+#       last_called_number = called_number
+#       break
+#     end
+#     break if win
+#   end
+#   break if win
+# end
+
+# remaining_numbers_on_winning_board = winning_board.flatten.reject { |e| e == "X" }
+
+# puts remaining_numbers_on_winning_board.sum * last_called_number
+
+# -- part 2
+
+winning_board_indices = []
 last_called_number = nil
 
 called_numbers.each do |called_number|
-  boards.each do |board|
+  boards.each_with_index do |board, index|
+    next if winning_board_indices.include?(index)
     mark(board, called_number)
     if win?(board)
-      win = true
-      winning_board = board
       last_called_number = called_number
-      break
+      winning_board_indices << index
     end
-    break if win
   end
-  break if win
 end
 
-remaining_numbers_on_winning_board = winning_board.flatten.reject { |e| e == "X" }
+last_winning_board = boards[winning_board_indices[-1]]
 
-puts remaining_numbers_on_winning_board.sum * last_called_number
+remaining_numbers_on_last_winning_board = last_winning_board.flatten
+  .reject { |e| e == "X" }
+
+puts remaining_numbers_on_last_winning_board.sum * last_called_number
+
+
 
 
