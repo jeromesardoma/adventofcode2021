@@ -541,6 +541,75 @@ def mark_vertical(floor, coord)
   end
 end
 
+def mark_top_to_bottom_diagonal(floor, coord)
+  # marks a diagonal from upper left to lower right
+  # x1 < x2, y1 < y2 
+  x1, x2 = x_coords(coord)
+  y1, y2 = y_coords(coord)
+  x_diff = x2 - x1
+  (0..x_diff).each do |unit|
+    floor[x1 + unit][y1 + unit] += 1
+  end
+end
+
+# def mark_reverse_top_to_bottom_diagonal(floor, coord)
+#   x1, x2 = x_coords(coord)
+#   y1, y2 = y_coords(coord)
+
+#   # take abs value, since x2 < x1, which is negative
+#   x_diff = (x2 - x1).abs 
+
+#   (0..x_diff).each do |unit|
+#     # reverse x1 and y1 order, as puzzle governs location by column -> row
+#     # instead of typical row -> column
+#     floor[y1 - unit][x1 - unit] += 1
+#   end
+# end
+
+# def mark_bottom_to_top_diagonal(floor, coord)
+#   # marks a diagonal from lower left to upper right; x1 < x2, y1 > y2
+#   x1, x2 = x_coords(coord)
+#   y1, y2 = y_coords(coord)
+#   x_diff = x2 - x1
+#   (0..x_diff).each do |unit|
+
+#     # y1, x1 order reversed
+#     floor[y1 - unit][x1 + unit] += 1
+#   end
+# end
+
+# def mark_reverse_bottom_to_top_diagonal(floor, coord)
+#   x1, x2 = x_coords(coord)
+#   y1, y2 = y_coords(coord)
+#   x_diff = (x2 - x1).abs
+#   (0..x_diff).each do |unit|
+#     floor[y1 + unit][x1 - unit] += 1
+#   end
+# end
+
+def mark_diagonal(floor, coord)
+  x1, x2 = x_coords(coord)
+  y1, y2 = y_coords(coord)
+
+  # take abs value, since x2 can be < x1 
+  x_diff = (x2 - x1).abs
+
+  (0..x_diff).each do |unit|
+    if ( x1 < x2 && y1 < y2 )
+      floor[x1 + unit][y1 + unit] += 1
+    elsif ( x1 > x2 && y1 > y2 )
+      # reverse x1 and y1 order, as puzzle governs location by column -> row
+      # instead of typical row -> column
+      floor[y1 - unit][x1 - unit] += 1
+    elsif ( x1 < x2 && y1 > y2 )
+      floor[y1 - unit][x1 + unit] += 1
+    elsif ( x1 > x2 && y1 < y2 )
+      floor[y1 + unit][x1 - unit] += 
+    end
+  end
+end
+
+
 sea_floor = []
 
 # run to add distinct rows to sea floor (as opposed to the same array 1000 times)
@@ -553,11 +622,49 @@ coordinates = input.split("\n").map do |coord_string|
   end
 
 coordinates.each do |coord|
-  mark_horizontal(sea_floor, coord) if horizontal?(coord)
-  mark_vertical(sea_floor, coord) if vertical?(coord)
+  if horizontal?(coord)
+    mark_horizontal(sea_floor, coord) 
+  elsif vertical?(coord)
+    mark_vertical(sea_floor, coord)
+  else
+    mark_diagonal(sea_floor, coord)
+  end
 end
+
 
 p sea_floor.flatten.count { |cell| cell >= 2 }
 
+test_input = "0,9 -> 5,9
+8,0 -> 0,8
+9,4 -> 3,4
+2,2 -> 2,1
+7,0 -> 7,4
+6,4 -> 2,0
+0,9 -> 2,9
+3,4 -> 1,4
+0,0 -> 8,8
+5,5 -> 8,2"
+
+test_sea_floor = []
+10.times { test_sea_floor << Array.new(10, 0) }
+
+test_coordinates = test_input.split("\n").map do |coord_string|
+  coord_string.split(" -> ").map do |substr| # example: ["1,2", "3,4"]
+    substr.split(",").map(&:to_i)
+  end
+end
+
+test_coordinates.each do |coord|
+  if horizontal?(coord)
+    mark_horizontal(test_sea_floor, coord) 
+  elsif vertical?(coord)
+    mark_vertical(test_sea_floor, coord)
+  else
+    mark_diagonal(test_sea_floor, coord) 
+  end
+end
+
+test_sea_floor.each { |r| p r }
+p test_sea_floor.flatten.count { |cell| cell >= 2 }
 
 
