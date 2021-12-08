@@ -13,3 +13,24 @@ positions = input.split(",").map(&:to_i)
 end
 
 p min_fuel_used
+
+def new_fuel_used(units_traveled)
+  if units_traveled == 0
+    0
+  else
+    units_traveled + new_fuel_used(units_traveled - 1)
+  end
+end
+
+new_min_fuel_used = 999999999999999
+
+(positions.min..positions.max).each do |possible_pos|
+  fuel_used = positions.map do |pos| 
+    new_fuel_used( (pos - possible_pos).abs )
+  end.sum
+  new_min_fuel_used = fuel_used if fuel_used < new_min_fuel_used
+end
+
+p new_min_fuel_used
+
+
