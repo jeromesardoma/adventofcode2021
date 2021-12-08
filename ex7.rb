@@ -22,6 +22,8 @@ def new_fuel_used(units_traveled)
   end
 end
 
+# part 2
+
 new_min_fuel_used = 999999999999999
 
 (positions.min..positions.max).each do |possible_pos|
