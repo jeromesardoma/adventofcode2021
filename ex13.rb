@@ -857,18 +857,18 @@ PAPER = []
 # the same array
 1310.times { PAPER << Array.new(1310, " ") }
 
-def mark_paper_with(coords)
+def mark_paper
   COORDS.each do |c|
     x, y = c
     PAPER[y][x] = MARK
   end
 end
 
-def transform(coords, axis, axis_point)
-  axis == 'x' ? transform_x(coords, axis_point) : transform_y(coords, axis_point)
+def transform(axis, axis_point)
+  axis == 'x' ? transform_x(axis_point) : transform_y(axis_point)
 end
 
-def transform_x(coords, axis_point)
+def transform_x(axis_point)
   COORDS.each_with_index do |c, i|
     x, y = c
     if x > axis_point
@@ -881,7 +881,7 @@ def transform_x(coords, axis_point)
   end
 end
 
-def transform_y(coords, axis_point)
+def transform_y(axis_point)
   COORDS.each_with_index do |c, i|
     x, y = c
     if y > axis_point
@@ -900,8 +900,8 @@ end
 
 # part 1
 
-# mark_paper_with coords
-# transform coords, 'x', 655
+# mark_paper
+# transform 'x', 655
 # p count_marked_cells
 
 AXES = [
@@ -919,10 +919,10 @@ AXES = [
   ['y', 6]
 ]
 
-mark_paper_with COORDS
+mark_paper
 AXES.each do |a|
   axis, axis_point = a
-  transform COORDS, axis, axis_point
+  transform axis, axis_point
   p count_marked_cells
 end
 
